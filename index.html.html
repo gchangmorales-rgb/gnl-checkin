@@ -1,0 +1,352 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>GNL GLOBAL Forum 2026 — Check-in</title>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --navy:#0d2b5e;--blue:#1a3d7c;--gold:#c8a84b;--red:#e63946;
+  --light:#f4f7fc;--border:#dde3ef;--text:#1a1a2e;--muted:#6b7a99;--white:#fff;
+  --green:#00a86b;--yellow:#f0a500;
+}
+html,body{height:100%;font-family:"Segoe UI",Arial,sans-serif;background:var(--light);color:var(--text);overflow:hidden}
+
+.topbar{background:var(--navy);height:52px;display:flex;align-items:center;padding:0 14px;gap:10px;flex-shrink:0}
+.logo{background:var(--gold);color:var(--navy);font-weight:900;font-size:9px;letter-spacing:.1em;padding:4px 7px;border-radius:4px;line-height:1.3;text-align:center;flex-shrink:0}
+.ev strong{font-size:11px;color:#fff;display:block}
+.ev span{font-size:9px;color:rgba(255,255,255,.38)}
+.live-pill{margin-left:auto;display:flex;align-items:center;gap:5px;background:rgba(0,168,107,.15);border:1px solid rgba(0,168,107,.3);border-radius:20px;padding:3px 9px;font-size:10px;font-weight:700;color:var(--green);flex-shrink:0}
+.ldot{width:6px;height:6px;border-radius:50%;background:var(--green);animation:pulse 1.5s infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.3}}
+
+.app{display:flex;flex-direction:column;height:100%}
+.body{flex:1;display:flex;flex-direction:column;overflow:hidden}
+
+/* Scanner */
+.scanner-box{position:relative;background:#000;flex-shrink:0;overflow:hidden;height:260px}
+#reader{width:100%;height:100%}
+#reader video{width:100%!important;height:100%!important;object-fit:cover}
+#reader img{display:none}
+.scan-hint{position:absolute;bottom:8px;left:50%;transform:translateX(-50%);background:rgba(0,0,0,.65);color:rgba(255,255,255,.85);font-size:11px;padding:4px 14px;border-radius:20px;white-space:nowrap;pointer-events:none;z-index:10}
+.reticle{position:absolute;top:50%;left:50%;transform:translate(-50%,-55%);width:180px;height:180px;pointer-events:none;z-index:5}
+.reticle::before,.reticle::after,.rc-tr,.rc-bl{content:'';position:absolute;width:28px;height:28px;border-color:var(--gold);border-style:solid}
+.reticle::before{top:0;left:0;border-width:3px 0 0 3px;border-radius:3px 0 0 0}
+.reticle::after{top:0;right:0;border-width:3px 3px 0 0;border-radius:0 3px 0 0}
+.rc-tr{bottom:0;right:0;border-width:0 3px 3px 0;border-radius:0 0 3px 0}
+.rc-bl{bottom:0;left:0;border-width:0 0 3px 3px;border-radius:0 0 0 3px}
+.scan-beam{position:absolute;left:8%;right:8%;height:2px;background:linear-gradient(90deg,transparent,var(--gold),transparent);animation:beam 1.8s ease-in-out infinite;opacity:0}
+@keyframes beam{0%{top:8%;opacity:0}10%{opacity:1}90%{opacity:1}100%{top:92%;opacity:0}}
+
+/* Manual */
+.manual-bar{display:flex;gap:8px;padding:10px 12px;background:var(--white);border-bottom:1px solid var(--border);flex-shrink:0}
+.manual-inp{flex:1;padding:9px 11px;font-family:"Courier New",monospace;font-size:13px;text-transform:uppercase;border:1.5px solid var(--border);border-radius:8px;color:var(--text);background:var(--light);outline:none}
+.manual-inp:focus{border-color:var(--blue);background:var(--white)}
+.manual-inp::placeholder{text-transform:none;font-family:"Segoe UI",Arial,sans-serif;color:var(--muted);font-size:11px}
+.btn-ok{padding:9px 16px;background:var(--blue);color:var(--white);border:none;border-radius:8px;font-size:13px;font-weight:700;cursor:pointer}
+
+/* Result */
+.result-area{flex:1;overflow-y:auto;padding:12px;display:flex;flex-direction:column}
+
+.waiting{display:flex;flex-direction:column;align-items:center;justify-content:center;flex:1;gap:10px;text-align:center;padding:20px}
+.waiting-icon{font-size:40px;opacity:.15}
+.waiting h3{font-size:15px;font-weight:700;color:var(--muted)}
+.waiting p{font-size:11px;color:var(--muted);line-height:1.6;max-width:220px}
+
+.res-card{border-radius:12px;overflow:hidden;border:1px solid var(--border);box-shadow:0 3px 14px rgba(13,43,94,.1);animation:slideUp .25s ease}
+@keyframes slideUp{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+.res-banner{padding:13px 15px;display:flex;align-items:center;gap:11px}
+.banner-ok {background:#e8fff5;border-bottom:1px solid #c0ecd8}
+.banner-dup{background:#fff8e6;border-bottom:1px solid #f0d880}
+.banner-err{background:#fef0f0;border-bottom:1px solid #f8c0c0}
+.b-icon{width:40px;height:40px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:18px;font-weight:700;flex-shrink:0}
+.banner-ok .b-icon{background:var(--green);color:#fff}
+.banner-dup .b-icon{background:var(--yellow);color:#fff}
+.banner-err .b-icon{background:var(--red);color:#fff}
+.b-title{font-size:15px;font-weight:800}
+.banner-ok .b-title{color:var(--green)}
+.banner-dup .b-title{color:var(--yellow)}
+.banner-err .b-title{color:var(--red)}
+.b-sub{font-size:10px;color:var(--muted);margin-top:1px}
+.res-body{background:var(--white);padding:14px;display:flex;gap:12px}
+.res-av{width:54px;height:54px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:17px;font-weight:800;color:#fff;flex-shrink:0}
+.res-name   {font-size:18px;font-weight:800;color:var(--navy);line-height:1.1;margin-bottom:2px}
+.res-role   {font-size:10px;color:var(--muted);margin-bottom:3px;line-height:1.4}
+.res-company{font-size:11px;font-weight:700;color:var(--gold);margin-bottom:8px}
+.res-badge  {display:inline-block;font-size:9px;font-weight:700;padding:2px 10px;border-radius:10px;text-transform:uppercase;letter-spacing:.07em;margin-bottom:9px}
+.chip-vip     {background:#fff8e6;color:#8a6000;border:1px solid #e8d080}
+.chip-sponsor {background:#eef3ff;color:#1a3d7c;border:1px solid #c0d0f0}
+.chip-delegate{background:#e8fff5;color:#006840;border:1px solid #90dab8}
+.chip-speaker {background:#f5f0ff;color:#5a2d8a;border:1px solid #c8a8e8}
+.chip-staff   {background:#f4f7fc;color:#6b7a99;border:1px solid #dde3ef}
+.res-time{display:flex;align-items:center;justify-content:space-between;padding:8px 10px;background:#e8fff5;border:1px solid #c0ecd8;border-radius:7px}
+.res-time span{font-size:10px;color:var(--muted)}
+.res-time strong{font-family:"Courier New",monospace;font-size:13px;color:var(--green)}
+.btn-next{width:100%;margin-top:9px;padding:10px;font-size:12px;font-weight:700;font-family:inherit;background:var(--light);border:1.5px solid var(--border);border-radius:8px;color:var(--muted);cursor:pointer}
+
+/* Stats */
+.stats-bar{background:var(--white);border-top:1px solid var(--border);padding:8px 14px;display:flex;flex-shrink:0}
+.stat{flex:1;text-align:center}
+.stat+.stat{border-left:1px solid var(--border)}
+.stat-n{font-size:22px;font-weight:900;line-height:1}
+.stat-n.green{color:var(--green)}.stat-n.yellow{color:var(--yellow)}.stat-n.red{color:var(--red)}
+.stat-l{font-size:9px;color:var(--muted);text-transform:uppercase;letter-spacing:.07em;margin-top:1px}
+
+/* Loading */
+.loading-screen{position:fixed;inset:0;background:var(--navy);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;z-index:999;transition:opacity .4s}
+.loading-screen.hidden{opacity:0;pointer-events:none}
+.ls-logo{background:var(--gold);color:var(--navy);font-weight:900;font-size:14px;letter-spacing:.1em;padding:8px 12px;border-radius:7px;line-height:1.3;text-align:center}
+.ls-sub{font-size:12px;color:rgba(255,255,255,.5)}
+.ls-spin{width:28px;height:28px;border:3px solid rgba(255,255,255,.15);border-top-color:var(--gold);border-radius:50%;animation:spin .8s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+.spin-sm{display:inline-block;width:13px;height:13px;border:2px solid rgba(13,43,94,.15);border-top-color:var(--blue);border-radius:50%;animation:spin .6s linear infinite;vertical-align:middle;margin-right:5px}
+</style>
+</head>
+<body>
+
+<div class="loading-screen" id="loading-screen">
+  <div class="ls-logo">GNL<br>GLOBAL</div>
+  <div class="ls-sub">Iniciando sistema de check-in...</div>
+  <div class="ls-spin"></div>
+</div>
+
+<div class="app">
+  <div class="topbar">
+    <div class="logo">GNL<br>GLOBAL</div>
+    <div class="ev">
+      <strong>Check-in · GNL GLOBAL Forum 2026</strong>
+      <span>InterContinental Santiago · Oct 19–21, 2026</span>
+    </div>
+    <div class="live-pill"><span class="ldot"></span>LIVE</div>
+  </div>
+
+  <div class="body">
+    <div class="scanner-box">
+      <div id="reader"></div>
+      <div class="reticle" id="reticle" style="display:none">
+        <div class="rc-tr"></div>
+        <div class="rc-bl"></div>
+        <div class="scan-beam"></div>
+      </div>
+      <div class="scan-hint" id="scan-hint">Iniciando cámara...</div>
+    </div>
+
+    <div class="manual-bar">
+      <input class="manual-inp" id="manual-id" placeholder="ID manual (IGGF2026-100)" maxlength="30"
+             onkeydown="if(event.key==='Enter')verifyManual()">
+      <button class="btn-ok" onclick="verifyManual()">OK</button>
+    </div>
+
+    <div class="result-area" id="result-area">
+      <div class="waiting">
+        <div class="waiting-icon">▣</div>
+        <h3>Esperando escaneo</h3>
+        <p>Apunta la cámara trasera al QR del gafete del asistente</p>
+      </div>
+    </div>
+
+    <div class="stats-bar">
+      <div class="stat"><div class="stat-n green" id="s-ok">0</div><div class="stat-l">Check-ins</div></div>
+      <div class="stat"><div class="stat-n yellow" id="s-dup">0</div><div class="stat-l">Duplicados</div></div>
+      <div class="stat"><div class="stat-n red" id="s-err">0</div><div class="stat-l">Inválidos</div></div>
+    </div>
+  </div>
+</div>
+
+<!-- html5-qrcode: la más robusta para móvil, usa BarcodeDetector nativo cuando está disponible -->
+<script src="https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js"></script>
+<script>
+
+// ── CONFIG ─────────────────────────────────────────────────────────────────
+var APPS_SCRIPT_URL = "https://script.google.com/a/macros/gnlglobal.com/s/AKfycbzoHsd71XcfD5s0qXS1sSwOBIQQOfQMCaX7OHzIiiixuJ86L7h3jiylqUWRqW2E_Fpa5w/exec";
+
+var lastScan = ''; var lastScanT = 0;
+var stats = { ok:0, dup:0, err:0 };
+
+var TYPE_CFG = {
+  VIP:     {label:'VIP',    chip:'chip-vip',     bg:'#8a6000'},
+  Sponsor: {label:'Sponsor',chip:'chip-sponsor', bg:'#1a3d7c'},
+  Delegate:{label:'Delegado',chip:'chip-delegate',bg:'#006840'},
+  Speaker: {label:'Speaker',chip:'chip-speaker', bg:'#5a2d8a'},
+  Staff:   {label:'Staff',  chip:'chip-staff',   bg:'#4a5a70'},
+};
+function getCfg(t){return TYPE_CFG[t]||TYPE_CFG.Delegate;}
+function ini(n){return(n||'?').split(' ').slice(0,2).map(function(w){return w[0]||'';}).join('').toUpperCase();}
+
+// ── INIT ──────────────────────────────────────────────────────────────────
+window.onload = function(){
+  setTimeout(function(){
+    document.getElementById('loading-screen').classList.add('hidden');
+  }, 1000);
+  iniciarScanner();
+};
+
+// ── SCANNER ───────────────────────────────────────────────────────────────
+function iniciarScanner(){
+  var scanner = new Html5Qrcode("reader");
+
+  Html5Qrcode.getCameras()
+    .then(function(cameras){
+      if(!cameras || cameras.length === 0){
+        document.getElementById('scan-hint').textContent = 'Sin cámara — usa el ID manual';
+        return;
+      }
+
+      // Preferir cámara trasera
+      var camId = cameras[cameras.length - 1].id;
+      for(var i = 0; i < cameras.length; i++){
+        var lbl = (cameras[i].label || '').toLowerCase();
+        if(lbl.includes('back') || lbl.includes('trasera') || lbl.includes('rear') || lbl.includes('environment')){
+          camId = cameras[i].id; break;
+        }
+      }
+
+      var config = {
+        fps: 15,
+        qrbox: { width: 200, height: 200 },
+        aspectRatio: 1.333,
+        experimentalFeatures: { useBarCodeDetectorIfSupported: true }
+      };
+
+      scanner.start(
+        camId,
+        config,
+        function(decodedText){
+          var now = Date.now();
+          if(decodedText === lastScan && now - lastScanT < 3000) return;
+          lastScan = decodedText; lastScanT = now;
+          var id = extractID(decodedText);
+          verificar(id);
+        },
+        function(){}
+      ).then(function(){
+        document.getElementById('scan-hint').textContent = 'Apunta al QR del gafete';
+        document.getElementById('reticle').style.display = 'block';
+      }).catch(function(err){
+        console.error(err);
+        document.getElementById('scan-hint').textContent = 'Sin acceso a cámara — usa el ID manual';
+      });
+    })
+    .catch(function(){
+      document.getElementById('scan-hint').textContent = 'Sin acceso a cámara — usa el ID manual';
+    });
+}
+
+function extractID(raw){
+  try{ var p = JSON.parse(raw); if(p.id) return p.id; }catch(e){}
+  return raw.trim().toUpperCase();
+}
+
+// ── MANUAL ────────────────────────────────────────────────────────────────
+function verifyManual(){
+  var id = document.getElementById('manual-id').value.trim().toUpperCase();
+  if(!id) return;
+  verificar(id);
+  document.getElementById('manual-id').value = '';
+}
+
+// ── VERIFICAR (llama al Apps Script via fetch) ─────────────────────────────
+function verificar(id){
+  mostrarSpinner(id);
+
+  var url = APPS_SCRIPT_URL + "?action=checkin&id=" + encodeURIComponent(id);
+
+  fetch(url, { redirect: 'follow' })
+    .then(function(res){ return res.json(); })
+    .then(function(r){ mostrarResultado(r, id); })
+    .catch(function(err){
+      console.error(err);
+      // Fallback: mostrar resultado con los datos del QR directamente
+      mostrarResultadoOffline(id);
+    });
+}
+
+// ── MOSTRAR RESULTADO ─────────────────────────────────────────────────────
+function mostrarSpinner(id){
+  document.getElementById('result-area').innerHTML =
+    '<div style="display:flex;align-items:center;justify-content:center;flex:1;flex-direction:column;gap:10px;padding:24px;color:var(--muted)">'
+    +'<div class="spin-sm" style="width:28px;height:28px;border-width:3px"></div>'
+    +'<div style="font-size:12px">Verificando <strong style="font-family:monospace">'+id+'</strong>...</div>'
+    +'</div>';
+}
+
+function mostrarResultado(r, id){
+  if(!r || !r.estado){ mostrarResultadoOffline(id); return; }
+
+  var tipo = r.estado;
+  var p    = r.persona;
+  var hora = r.hora || r.horaPrevia || horaActual();
+  var c    = getCfg(p ? p.tipo : 'Delegate');
+
+  var cls  = {ok:'banner-ok', duplicado:'banner-dup', invalido:'banner-err'}[tipo] || 'banner-err';
+  var icon = {ok:'✓', duplicado:'!', invalido:'✕'}[tipo] || '✕';
+  var title= {ok:'Acceso autorizado', duplicado:'Ya registrado', invalido:'QR no válido'}[tipo] || 'Error';
+  var sub  = {ok:'✓ Guardado en Google Sheets', duplicado:'Este gafete ya fue escaneado hoy', invalido:'ID no encontrado en el sistema'}[tipo] || '';
+
+  if(tipo === 'ok')        { stats.ok++;  document.getElementById('s-ok').textContent  = stats.ok; }
+  else if(tipo === 'duplicado'){ stats.dup++; document.getElementById('s-dup').textContent = stats.dup; }
+  else                     { stats.err++; document.getElementById('s-err').textContent = stats.err; }
+
+  document.getElementById('result-area').innerHTML =
+    '<div class="res-card">'
+    +'<div class="res-banner '+cls+'">'
+    +'<div class="b-icon">'+icon+'</div>'
+    +'<div><div class="b-title">'+title+'</div><div class="b-sub">'+sub+'</div></div>'
+    +'</div>'
+    +'<div class="res-body">'
+    +'<div class="res-av" style="background:'+(p?c.bg:'#6b7a99')+'">'+ini(p?p.nombre:id)+'</div>'
+    +'<div style="flex:1">'
+    +'<div class="res-name">'+(p ? p.nombre : 'Asistente desconocido')+'</div>'
+    +'<div class="res-role">'+(p ? p.cargo  : '')+'</div>'
+    +'<div class="res-company">'+(p ? p.empresa : 'ID: '+id)+'</div>'
+    +'<span class="res-badge '+(p?c.chip:'chip-staff')+'">'+(p?c.label:'Inválido')+'</span>'
+    +(tipo !== 'invalido' ? '<div class="res-time"><span>⏱ Hora de ingreso</span><strong>'+hora+'</strong></div>' : '')
+    +'<button class="btn-next" onclick="resetResult()">← Siguiente asistente</button>'
+    +'</div></div></div>';
+}
+
+function mostrarResultadoOffline(raw){
+  // Si falla la conexión, parsea los datos del QR directamente
+  var p = null;
+  try{ p = JSON.parse(raw); }catch(e){}
+  var hora = horaActual();
+  stats.ok++; document.getElementById('s-ok').textContent = stats.ok;
+  var c = getCfg(p ? p.tipo : 'Delegate');
+
+  document.getElementById('result-area').innerHTML =
+    '<div class="res-card">'
+    +'<div class="res-banner banner-ok">'
+    +'<div class="b-icon">✓</div>'
+    +'<div><div class="b-title">QR leído correctamente</div>'
+    +'<div class="b-sub">⚠ Sin conexión — verifica manualmente en el Sheet</div></div>'
+    +'</div>'
+    +'<div class="res-body">'
+    +'<div class="res-av" style="background:'+(p?c.bg:'#1a3d7c')+'">'+ini(p?p.nombre:'?')+'</div>'
+    +'<div style="flex:1">'
+    +'<div class="res-name">'+(p&&p.nombre ? p.nombre : 'Ver ID abajo')+'</div>'
+    +'<div class="res-role">'+(p&&p.cargo ? p.cargo : '')+'</div>'
+    +'<div class="res-company">'+(p&&p.empresa ? p.empresa : '')+'</div>'
+    +'<span class="res-badge '+(p?c.chip:'chip-delegate')+'">'+(p?c.label:'QR válido')+'</span>'
+    +'<div class="res-time"><span>⏱ Hora</span><strong>'+hora+'</strong></div>'
+    +'<button class="btn-next" onclick="resetResult()">← Siguiente asistente</button>'
+    +'</div></div></div>';
+}
+
+function resetResult(){
+  document.getElementById('result-area').innerHTML =
+    '<div class="waiting">'
+    +'<div class="waiting-icon">▣</div>'
+    +'<h3>Esperando escaneo</h3>'
+    +'<p>Apunta la cámara trasera al QR del gafete del asistente</p>'
+    +'</div>';
+}
+
+function horaActual(){
+  var d = new Date();
+  return [d.getHours(),d.getMinutes(),d.getSeconds()].map(function(n){return String(n).padStart(2,'0')}).join(':');
+}
+</script>
+</body>
+</html>
